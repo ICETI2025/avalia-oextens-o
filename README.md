@@ -458,7 +458,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // --- CONFIGURAÇÃO DO EMAILJS ---
-            const EMAILJS_SERVICE_ID = 'service_b13wyfh';
+            const EMAILJS_SERVICE_ID = 'service_8jtw634';
             const EMAILJS_TEMPLATE_ID = 'template_1idnftc';
             const EMAILJS_PUBLIC_KEY = 'C3k0CDn3Or2_TP7jg';
             
