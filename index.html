@@ -9,8 +9,7 @@
     <!-- Application Structure Plan: The application maintains its single-page linear workflow. The header has been redesigned for a cleaner, text-based corporate look. The core evaluation is a single list of criteria. A 'Final Score' summary card provides immediate feedback. The flow concludes with a 'Justificativa' section and action buttons. The form submits to SheetMonkey and triggers an email via EmailJS. -->
     <!-- Visualization & Content Choices: 
         - Identification: Standard HTML inputs, all marked as required.
-        - Evaluation Criteria: Static sections with clearer visual hierarchy.
-        - Tooltips: Info icons with CSS-based tooltips for contextual help.
+        - Evaluation Criteria: Static sections with clearer visual hierarchy and tooltips.
         - Tabela 1 Criteria (e.g., 1a-1e): Standard radio buttons with a conditional, restyled range slider for a classic form feel.
         - Final Score Summary: A dedicated, styled card for high visibility.
         - Library/Method: Vanilla JavaScript for all logic, custom toast notifications, and integration with external services. -->
@@ -23,9 +22,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" xintegrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
+        html {
+            height: 100%;
+        }
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+        }
+        main {
+            flex-grow: 1;
         }
         .card {
             background-color: white;
@@ -60,6 +68,9 @@
             outline: none;
             box-shadow: 0 0 0 3px rgba(0, 90, 156, 0.2);
             border-color: #005A9C;
+        }
+        textarea {
+            resize: none;
         }
         input.error {
             border-color: #e53e3e;
@@ -179,6 +190,9 @@
         input[type="radio"], input[type="checkbox"] {
             accent-color: #005A9C;
         }
+        .sub-criterion.error p:first-child {
+            color: #e53e3e;
+        }
     </style>
 </head>
 <body class="text-gray-800">
@@ -194,217 +208,232 @@
     </header>
 
     <main class="container mx-auto px-6 py-8">
-        <form id="evaluationForm" action="https://api.sheetmonkey.io/form/jJotmHpLKDGoULBwkVKsvo" method="post">
-            
-            <div class="card">
-                <div class="card-header bg-gray-50 p-4 border-b border-gray-200">
-                    <h2 class="text-xl font-semibold text-[#005A9C]"><i class="fas fa-user-tie mr-2"></i> Identificação</h2>
-                </div>
-                <div class="p-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="md:col-span-2">
-                            <label for="evaluatorName" class="block text-sm font-medium text-gray-700 mb-1">Avaliador(a):</label>
-                            <input type="text" id="evaluatorName" name="Avaliador" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
-                        </div>
-                        <div>
-                            <label for="proponentName" class="block text-sm font-medium text-gray-700 mb-1">Proponente:</label>
-                            <input type="text" id="proponentName" name="Proponente" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
-                        </div>
-                         <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">E-mail do Avaliador:</label>
-                            <input type="email" id="email" name="Email" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label for="projectTitle" class="block text-sm font-medium text-gray-700 mb-1">Título:</label>
-                            <input type="text" id="projectTitle" name="Titulo_Projeto" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
-                        </div>
-                        <div>
-                            <label for="campus" class="block text-sm font-medium text-gray-700 mb-1">Campus:</label>
-                            <input type="text" id="campus" name="Campus" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
-                        </div>
-                        <div>
-                            <label for="course" class="block text-sm font-medium text-gray-700 mb-1">Curso:</label>
-                            <input type="text" id="course" name="Curso" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label for="lattesLink" class="block text-sm font-medium text-gray-700 mb-1">Link para Currículo Lattes:</label>
-                            <input type="url" id="lattesLink" name="Link_Lattes" placeholder="https://" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
-                        </div>
+        <div id="form-container">
+            <form id="evaluationForm" action="https://api.sheetmonkey.io/form/jJotmHpLKDGoULBwkVKsvo" method="post">
+                
+                <div class="card">
+                    <div class="card-header bg-gray-50 p-4 border-b border-gray-200">
+                        <h2 class="text-xl font-semibold text-[#005A9C]"><i class="fas fa-user-tie mr-2"></i> Identificação</h2>
                     </div>
-                </div>
-            </div>
-
-            <div class="card">
-                 <div class="p-4 flex justify-between items-center bg-gray-800 text-white rounded-t-lg">
-                    <h2 class="text-xl font-semibold"><i class="fas fa-clipboard-list mr-2"></i> Pontuação do Projeto</h2>
-                    <div class="text-lg font-bold">Total: <span id="tabela1-total" class="text-yellow-300">0.0</span></div>
-                </div>
-                <div class="p-6">
-                    <!-- Critério 1 -->
-                    <div class="criterion-section">
-                        <p class="font-semibold mb-3 text-lg text-gray-700 flex items-center">1. Diretrizes da extensão (Máx: 25) <i class="fas fa-info-circle tooltip" data-tooltip="Avalie se o projeto atende às 5 diretrizes do FORPROEXT."></i></p>
-                        <div class="space-y-6 pl-4">
-                            <div class="sub-criterion" data-criterion="1a">
-                                <p>a) Interação dialógica</p>
-                                <p class="text-sm text-gray-600 mt-2">Este critério se aplica ao projeto?</p>
-                                <div class="flex space-x-4 mt-1">
-                                    <label class="flex items-center"><input type="radio" name="Aplica_1a" value="sim" class="mr-2"> Sim</label>
-                                    <label class="flex items-center"><input type="radio" name="Aplica_1a" value="nao" checked class="mr-2"> Não</label>
-                                </div>
-                                <div class="slider-wrapper" id="slider-wrapper-1a">
-                                    <label class="text-sm text-gray-600">Avalie de 0 a 5:</label>
-                                    <div class="slider-container">
-                                        <input type="range" id="slider-1a" min="0" max="5" value="0" class="w-full slider-input">
-                                        <span class="font-semibold text-[#005A9C] w-16 text-center" id="slider-value-1a">0 pts</span>
-                                    </div>
-                                </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="md:col-span-2">
+                                <label for="evaluatorName" class="block text-sm font-medium text-gray-700 mb-1">Avaliador(a):</label>
+                                <input type="text" id="evaluatorName" name="Avaliador" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
                             </div>
-                            <div class="sub-criterion" data-criterion="1b">
-                                <p>b) Interdisciplinaridade</p>
-                                <p class="text-sm text-gray-600 mt-2">Este critério se aplica ao projeto?</p>
-                                <div class="flex space-x-4 mt-1">
-                                    <label class="flex items-center"><input type="radio" name="Aplica_1b" value="sim" class="mr-2"> Sim</label>
-                                    <label class="flex items-center"><input type="radio" name="Aplica_1b" value="nao" checked class="mr-2"> Não</label>
-                                </div>
-                                <div class="slider-wrapper" id="slider-wrapper-1b">
-                                    <label class="text-sm text-gray-600">Avalie de 0 a 5:</label>
-                                    <div class="slider-container">
-                                        <input type="range" id="slider-1b" min="0" max="5" value="0" class="w-full slider-input">
-                                        <span class="font-semibold text-[#005A9C] w-16 text-center" id="slider-value-1b">0 pts</span>
-                                    </div>
-                                </div>
+                            <div>
+                                <label for="proponentName" class="block text-sm font-medium text-gray-700 mb-1">Proponente:</label>
+                                <input type="text" id="proponentName" name="Proponente" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
                             </div>
-                            <div class="sub-criterion" data-criterion="1c">
-                                <p>c) Relação com ensino e pesquisa</p>
-                                <p class="text-sm text-gray-600 mt-2">Este critério se aplica ao projeto?</p>
-                                <div class="flex space-x-4 mt-1">
-                                    <label class="flex items-center"><input type="radio" name="Aplica_1c" value="sim" class="mr-2"> Sim</label>
-                                    <label class="flex items-center"><input type="radio" name="Aplica_1c" value="nao" checked class="mr-2"> Não</label>
-                                </div>
-                                <div class="slider-wrapper" id="slider-wrapper-1c">
-                                    <label class="text-sm text-gray-600">Avalie de 0 a 5:</label>
-                                    <div class="slider-container">
-                                        <input type="range" id="slider-1c" min="0" max="5" value="0" class="w-full slider-input">
-                                        <span class="font-semibold text-[#005A9C] w-16 text-center" id="slider-value-1c">0 pts</span>
-                                    </div>
-                                </div>
+                             <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">E-mail do Avaliador:</label>
+                                <input type="email" id="email" name="Email" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
                             </div>
-                            <div class="sub-criterion" data-criterion="1d">
-                                <p>d) Impacto na formação do estudante</p>
-                                <p class="text-sm text-gray-600 mt-2">Este critério se aplica ao projeto?</p>
-                                <div class="flex space-x-4 mt-1">
-                                    <label class="flex items-center"><input type="radio" name="Aplica_1d" value="sim" class="mr-2"> Sim</label>
-                                    <label class="flex items-center"><input type="radio" name="Aplica_1d" value="nao" checked class="mr-2"> Não</label>
-                                </div>
-                                <div class="slider-wrapper" id="slider-wrapper-1d">
-                                    <label class="text-sm text-gray-600">Avalie de 0 a 5:</label>
-                                    <div class="slider-container">
-                                        <input type="range" id="slider-1d" min="0" max="5" value="0" class="w-full slider-input">
-                                        <span class="font-semibold text-[#005A9C] w-16 text-center" id="slider-value-1d">0 pts</span>
-                                    </div>
-                                </div>
+                            <div class="md:col-span-2">
+                                <label for="projectTitle" class="block text-sm font-medium text-gray-700 mb-1">Título:</label>
+                                <input type="text" id="projectTitle" name="Titulo_Projeto" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
                             </div>
-                            <div class="sub-criterion" data-criterion="1e">
-                                <p>e) Transformação social</p>
-                                <p class="text-sm text-gray-600 mt-2">Este critério se aplica ao projeto?</p>
-                                <div class="flex space-x-4 mt-1">
-                                    <label class="flex items-center"><input type="radio" name="Aplica_1e" value="sim" class="mr-2"> Sim</label>
-                                    <label class="flex items-center"><input type="radio" name="Aplica_1e" value="nao" checked class="mr-2"> Não</label>
-                                </div>
-                                <div class="slider-wrapper" id="slider-wrapper-1e">
-                                    <label class="text-sm text-gray-600">Avalie de 0 a 5:</label>
-                                    <div class="slider-container">
-                                        <input type="range" id="slider-1e" min="0" max="5" value="0" class="w-full slider-input">
-                                        <span class="font-semibold text-[#005A9C] w-16 text-center" id="slider-value-1e">0 pts</span>
-                                    </div>
-                                </div>
+                            <div>
+                                <label for="campus" class="block text-sm font-medium text-gray-700 mb-1">Campus:</label>
+                                <input type="text" id="campus" name="Campus" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+                            </div>
+                            <div>
+                                <label for="course" class="block text-sm font-medium text-gray-700 mb-1">Curso:</label>
+                                <input type="text" id="course" name="Curso" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label for="lattesLink" class="block text-sm font-medium text-gray-700 mb-1">Link para Currículo Lattes:</label>
+                                <input type="url" id="lattesLink" name="Link_Lattes" placeholder="https://" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
                             </div>
                         </div>
                     </div>
-                    <!-- Critério 2 -->
-                    <div class="criterion-section">
-                        <p class="font-semibold mb-3 text-lg text-gray-700 flex items-center">2. Ações principais (Máx: 40) <i class="fas fa-info-circle tooltip" data-tooltip="Local de realização das atividades principais do projeto."></i></p>
-                        <div class="space-y-2 pl-4">
-                            <label class="flex items-center"><input type="radio" name="Acoes_Principais" value="40" class="mr-2"> São realizadas na comunidade externa à Unicesumar/ICETI (40 pts)</label>
-                            <label class="flex items-center"><input type="radio" name="Acoes_Principais" value="10" class="mr-2"> São realizadas nos espaços da Unicesumar/ICETI com foco na comunidade externa (10 pts)</label>
-                            <label class="flex items-center"><input type="radio" name="Acoes_Principais" value="0" checked class="mr-2"> Nenhuma das opções</label>
-                        </div>
+                </div>
+
+                <div class="card">
+                     <div class="p-4 flex justify-between items-center bg-gray-800 text-white rounded-t-lg">
+                        <h2 class="text-xl font-semibold"><i class="fas fa-clipboard-list mr-2"></i> Pontuação do Projeto</h2>
+                        <div class="text-lg font-bold">Total: <span id="tabela1-total" class="text-yellow-300">0.0</span></div>
                     </div>
-                    <!-- Critério 3 -->
-                    <div class="criterion-section">
-                        <p class="font-semibold mb-3 text-lg text-gray-700 flex items-center">3. Relações com setores sociais (Máx: 15) <i class="fas fa-info-circle tooltip" data-tooltip="Número de setores sociais com os quais o projeto dialoga."></i></p>
-                        <div class="space-y-2 pl-4">
-                            <label class="flex items-center"><input type="radio" name="Setores_Sociais" value="15" class="mr-2"> Com mais de dois setores (15 pts)</label>
-                            <label class="flex items-center"><input type="radio" name="Setores_Sociais" value="10" class="mr-2"> Com dois setores (10 pts)</label>
-                            <label class="flex items-center"><input type="radio" name="Setores_Sociais" value="5" class="mr-2"> Com um setor (5 pts)</label>
-                            <label class="flex items-center"><input type="radio" name="Setores_Sociais" value="0" checked class="mr-2"> Não identifica setor (0 pts)</label>
+                    <div class="p-6">
+                        <!-- Critério 1 -->
+                        <div class="criterion-section">
+                            <p class="font-semibold mb-3 text-lg text-gray-700 flex items-center">1. Diretrizes da extensão (Máx: 25) <i class="fas fa-info-circle tooltip" data-tooltip="Avalie se o projeto atende às 5 diretrizes do FORPROEXT."></i></p>
+                            <div class="space-y-6 pl-4">
+                                <div class="sub-criterion" data-criterion="1a">
+                                    <p>a) Interação dialógica</p>
+                                    <p class="text-sm text-gray-600 mt-2">Este critério se aplica ao projeto?</p>
+                                    <div class="flex space-x-4 mt-1">
+                                        <label class="flex items-center"><input type="radio" name="Aplica_1a" value="sim" class="mr-2"> Sim</label>
+                                        <label class="flex items-center"><input type="radio" name="Aplica_1a" value="nao" checked class="mr-2"> Não</label>
+                                    </div>
+                                    <div class="slider-wrapper" id="slider-wrapper-1a">
+                                        <label class="text-sm text-gray-600">Avalie de 0 a 5:</label>
+                                        <div class="slider-container">
+                                            <input type="range" id="slider-1a" min="0" max="5" value="0" class="w-full slider-input">
+                                            <span class="font-semibold text-[#005A9C] w-16 text-center" id="slider-value-1a">0 pts</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-criterion" data-criterion="1b">
+                                    <p>b) Interdisciplinaridade</p>
+                                    <p class="text-sm text-gray-600 mt-2">Este critério se aplica ao projeto?</p>
+                                    <div class="flex space-x-4 mt-1">
+                                        <label class="flex items-center"><input type="radio" name="Aplica_1b" value="sim" class="mr-2"> Sim</label>
+                                        <label class="flex items-center"><input type="radio" name="Aplica_1b" value="nao" checked class="mr-2"> Não</label>
+                                    </div>
+                                    <div class="slider-wrapper" id="slider-wrapper-1b">
+                                        <label class="text-sm text-gray-600">Avalie de 0 a 5:</label>
+                                        <div class="slider-container">
+                                            <input type="range" id="slider-1b" min="0" max="5" value="0" class="w-full slider-input">
+                                            <span class="font-semibold text-[#005A9C] w-16 text-center" id="slider-value-1b">0 pts</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-criterion" data-criterion="1c">
+                                    <p>c) Relação com ensino e pesquisa</p>
+                                    <p class="text-sm text-gray-600 mt-2">Este critério se aplica ao projeto?</p>
+                                    <div class="flex space-x-4 mt-1">
+                                        <label class="flex items-center"><input type="radio" name="Aplica_1c" value="sim" class="mr-2"> Sim</label>
+                                        <label class="flex items-center"><input type="radio" name="Aplica_1c" value="nao" checked class="mr-2"> Não</label>
+                                    </div>
+                                    <div class="slider-wrapper" id="slider-wrapper-1c">
+                                        <label class="text-sm text-gray-600">Avalie de 0 a 5:</label>
+                                        <div class="slider-container">
+                                            <input type="range" id="slider-1c" min="0" max="5" value="0" class="w-full slider-input">
+                                            <span class="font-semibold text-[#005A9C] w-16 text-center" id="slider-value-1c">0 pts</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-criterion" data-criterion="1d">
+                                    <p>d) Impacto na formação do estudante</p>
+                                    <p class="text-sm text-gray-600 mt-2">Este critério se aplica ao projeto?</p>
+                                    <div class="flex space-x-4 mt-1">
+                                        <label class="flex items-center"><input type="radio" name="Aplica_1d" value="sim" class="mr-2"> Sim</label>
+                                        <label class="flex items-center"><input type="radio" name="Aplica_1d" value="nao" checked class="mr-2"> Não</label>
+                                    </div>
+                                    <div class="slider-wrapper" id="slider-wrapper-1d">
+                                        <label class="text-sm text-gray-600">Avalie de 0 a 5:</label>
+                                        <div class="slider-container">
+                                            <input type="range" id="slider-1d" min="0" max="5" value="0" class="w-full slider-input">
+                                            <span class="font-semibold text-[#005A9C] w-16 text-center" id="slider-value-1d">0 pts</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="sub-criterion" data-criterion="1e">
+                                    <p>e) Transformação social</p>
+                                    <p class="text-sm text-gray-600 mt-2">Este critério se aplica ao projeto?</p>
+                                    <div class="flex space-x-4 mt-1">
+                                        <label class="flex items-center"><input type="radio" name="Aplica_1e" value="sim" class="mr-2"> Sim</label>
+                                        <label class="flex items-center"><input type="radio" name="Aplica_1e" value="nao" checked class="mr-2"> Não</label>
+                                    </div>
+                                    <div class="slider-wrapper" id="slider-wrapper-1e">
+                                        <label class="text-sm text-gray-600">Avalie de 0 a 5:</label>
+                                        <div class="slider-container">
+                                            <input type="range" id="slider-1e" min="0" max="5" value="0" class="w-full slider-input">
+                                            <span class="font-semibold text-[#005A9C] w-16 text-center" id="slider-value-1e">0 pts</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <!-- Critério 5 -->
-                    <div class="criterion-section">
-                        <p class="font-semibold mb-3 text-lg text-gray-700 flex items-center">5. Professores orientadores (Máx: 15) <i class="fas fa-info-circle tooltip" data-tooltip="Quantidade de professores envolvidos além do coordenador."></i></p>
-                        <div class="space-y-2 pl-4">
-                            <label class="flex items-center"><input type="radio" name="Professores_Orientadores" value="15" class="mr-2"> Mais de 03 (15 pts)</label>
-                            <label class="flex items-center"><input type="radio" name="Professores_Orientadores" value="10" class="mr-2"> De 01 a 03 (10 pts)</label>
-                            <label class="flex items-center"><input type="radio" name="Professores_Orientadores" value="0" checked class="mr-2"> Nenhum</label>
+                        <!-- Critério 2 -->
+                        <div class="criterion-section">
+                            <p class="font-semibold mb-3 text-lg text-gray-700 flex items-center">2. Ações principais (Máx: 40) <i class="fas fa-info-circle tooltip" data-tooltip="Local de realização das atividades principais do projeto."></i></p>
+                            <div class="space-y-2 pl-4">
+                                <label class="flex items-center"><input type="radio" name="Acoes_Principais" value="40" class="mr-2"> São realizadas na comunidade externa à Unicesumar/ICETI (40 pts)</label>
+                                <label class="flex items-center"><input type="radio" name="Acoes_Principais" value="10" class="mr-2"> São realizadas nos espaços da Unicesumar/ICETI com foco na comunidade externa (10 pts)</label>
+                                <label class="flex items-center"><input type="radio" name="Acoes_Principais" value="0" checked class="mr-2"> Nenhuma das opções</label>
+                            </div>
                         </div>
-                    </div>
-                    <!-- Critério 6 -->
-                    <div class="criterion-section">
-                        <p class="font-semibold mb-3 text-lg text-gray-700 flex items-center">6. Ações contempladas (Máx: 20) <i class="fas fa-info-circle tooltip" data-tooltip="Selecione as áreas de atuação do projeto. A pontuação é somada."></i></p>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pl-4">
-                            <label class="flex items-center"><input type="checkbox" name="Acoes_Contempladas" value="Inclusao_Social" class="mr-2"> Inclusão Social (5 pts)</label>
-                            <label class="flex items-center"><input type="checkbox" name="Acoes_Contempladas" value="Desenvolvimento_Economico_Social" class="mr-2"> Desenvolvimento Econômico e Social (5 pts)</label>
-                            <label class="flex items-center"><input type="checkbox" name="Acoes_Contempladas" value="Meio_Ambiente" class="mr-2"> Defesa e preservação do meio ambiente (5 pts)</label>
-                            <label class="flex items-center"><input type="checkbox" name="Acoes_Contempladas" value="Patrimonio_Cultural" class="mr-2"> Defesa da memória e do patrimônio cultural (5 pts)</label>
+                        <!-- Critério 3 -->
+                        <div class="criterion-section">
+                            <p class="font-semibold mb-3 text-lg text-gray-700 flex items-center">3. Relações com setores sociais (Máx: 15) <i class="fas fa-info-circle tooltip" data-tooltip="Número de setores sociais com os quais o projeto dialoga."></i></p>
+                            <div class="space-y-2 pl-4">
+                                <label class="flex items-center"><input type="radio" name="Setores_Sociais" value="15" class="mr-2"> Com mais de dois setores (15 pts)</label>
+                                <label class="flex items-center"><input type="radio" name="Setores_Sociais" value="10" class="mr-2"> Com dois setores (10 pts)</label>
+                                <label class="flex items-center"><input type="radio" name="Setores_Sociais" value="5" class="mr-2"> Com um setor (5 pts)</label>
+                                <label class="flex items-center"><input type="radio" name="Setores_Sociais" value="0" checked class="mr-2"> Não identifica setor (0 pts)</label>
+                            </div>
                         </div>
-                    </div>
-                    <!-- Critério 7 -->
-                    <div class="criterion-section">
-                        <p class="font-semibold mb-3 text-lg text-gray-700 flex items-center">7. Ações com grupos sociais específicos (Máx: 10) <i class="fas fa-info-circle tooltip" data-tooltip="Verifique se o projeto atende grupos à margem das ações tradicionais."></i></p>
-                        <div class="space-y-2 pl-4">
-                            <label class="flex items-center"><input type="radio" name="Grupos_Sociais" value="10" class="mr-2"> Sim (10 pts)</label>
-                            <label class="flex items-center"><input type="radio" name="Grupos_Sociais" value="0" checked class="mr-2"> Não (0 pts)</label>
+                        <!-- Critério 5 -->
+                        <div class="criterion-section">
+                            <p class="font-semibold mb-3 text-lg text-gray-700 flex items-center">5. Professores orientadores (Máx: 15) <i class="fas fa-info-circle tooltip" data-tooltip="Quantidade de professores envolvidos além do coordenador."></i></p>
+                            <div class="space-y-2 pl-4">
+                                <label class="flex items-center"><input type="radio" name="Professores_Orientadores" value="15" class="mr-2"> Mais de 03 (15 pts)</label>
+                                <label class="flex items-center"><input type="radio" name="Professores_Orientadores" value="10" class="mr-2"> De 01 a 03 (10 pts)</label>
+                                <label class="flex items-center"><input type="radio" name="Professores_Orientadores" value="0" checked class="mr-2"> Nenhum</label>
+                            </div>
+                        </div>
+                        <!-- Critério 6 -->
+                        <div class="criterion-section">
+                            <p class="font-semibold mb-3 text-lg text-gray-700 flex items-center">6. Ações contempladas (Máx: 20) <i class="fas fa-info-circle tooltip" data-tooltip="Selecione as áreas de atuação do projeto. A pontuação é somada."></i></p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pl-4">
+                                <label class="flex items-center"><input type="checkbox" name="Acoes_Contempladas" value="Inclusao_Social" class="mr-2"> Inclusão Social (5 pts)</label>
+                                <label class="flex items-center"><input type="checkbox" name="Acoes_Contempladas" value="Desenvolvimento_Economico_Social" class="mr-2"> Desenvolvimento Econômico e Social (5 pts)</label>
+                                <label class="flex items-center"><input type="checkbox" name="Acoes_Contempladas" value="Meio_Ambiente" class="mr-2"> Defesa e preservação do meio ambiente (5 pts)</label>
+                                <label class="flex items-center"><input type="checkbox" name="Acoes_Contempladas" value="Patrimonio_Cultural" class="mr-2"> Defesa da memória e do patrimônio cultural (5 pts)</label>
+                            </div>
+                        </div>
+                        <!-- Critério 7 -->
+                        <div class="criterion-section">
+                            <p class="font-semibold mb-3 text-lg text-gray-700 flex items-center">7. Ações com grupos sociais específicos (Máx: 10) <i class="fas fa-info-circle tooltip" data-tooltip="Verifique se o projeto atende grupos à margem das ações tradicionais."></i></p>
+                            <div class="space-y-2 pl-4">
+                                <label class="flex items-center"><input type="radio" name="Grupos_Sociais" value="10" class="mr-2"> Sim (10 pts)</label>
+                                <label class="flex items-center"><input type="radio" name="Grupos_Sociais" value="0" checked class="mr-2"> Não (0 pts)</label>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="card final-score-card">
-                 <div class="p-4 flex justify-between items-center">
-                    <h2 class="text-xl font-semibold text-[#004170]">Pontuação Final do Projeto:</h2>
-                    <div class="text-2xl font-bold text-[#004170]"><span id="final-score-display">0.0</span></div>
+                <div class="card final-score-card">
+                     <div class="p-4 flex justify-between items-center">
+                        <h2 class="text-xl font-semibold text-[#004170]">Pontuação Final do Projeto:</h2>
+                        <div class="text-2xl font-bold text-[#004170]"><span id="final-score-display">0.0</span></div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="card">
-                <div class="card-header bg-gray-50 p-4 border-b border-gray-200">
-                    <h2 class="text-xl font-semibold text-[#005A9C]"><i class="fas fa-pen-alt mr-2"></i> Observações / Justificativa Final</h2>
+                <div class="card">
+                    <div class="card-header bg-gray-50 p-4 border-b border-gray-200">
+                        <h2 class="text-xl font-semibold text-[#005A9C]"><i class="fas fa-pen-alt mr-2"></i> Observações / Justificativa Final</h2>
+                    </div>
+                    <div class="p-6">
+                        <label for="observacoes" class="block text-sm font-medium text-gray-700 mb-1">Forneça uma justificativa para a pontuação atribuída.</label>
+                        <textarea id="observacoes" name="Observacoes" rows="6" maxlength="500" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm resize-none"></textarea>
+                        <div class="text-right text-sm text-gray-500 mt-1"><span id="char-count">0</span> / 500</div>
+                    </div>
                 </div>
-                <div class="p-6">
-                    <label for="observacoes" class="block text-sm font-medium text-gray-700 mb-1">Forneça uma justificativa para a pontuação atribuída.</label>
-                    <textarea id="observacoes" name="Observacoes" rows="6" maxlength="500" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm resize-none"></textarea>
-                    <div class="text-right text-sm text-gray-500 mt-1"><span id="char-count">0</span> / 500</div>
+                
+                <!-- Hidden fields for submission -->
+                <input type="hidden" name="Protocolo" id="hidden-protocol-number">
+                <input type="hidden" name="Pontuacao_Final" id="hidden-total-score">
+                <input type="hidden" name="Pontuacao_1a" id="hidden-score-1a" value="0">
+                <input type="hidden" name="Pontuacao_1b" id="hidden-score-1b" value="0">
+                <input type="hidden" name="Pontuacao_1c" id="hidden-score-1c" value="0">
+                <input type="hidden" name="Pontuacao_1d" id="hidden-score-1d" value="0">
+                <input type="hidden" name="Pontuacao_1e" id="hidden-score-1e" value="0">
+                <input type="hidden" name="Created" value="x-sheetmonkey-current-date-time" />
+
+
+                <div class="flex justify-end gap-4 mt-6">
+                    <button type="button" id="previewBtn" class="btn-secondary text-white font-bold py-2 px-4 rounded-md shadow-lg"><i class="fas fa-eye mr-2"></i> Visualizar Avaliação</button>
+                    <button type="submit" id="submitBtn" class="btn-primary text-white font-bold py-2 px-4 rounded-md shadow-lg"><i class="fas fa-paper-plane mr-2"></i> Enviar Avaliação</button>
                 </div>
+
+            </form>
+        </div>
+        <div id="thank-you-page" class="hidden text-center">
+            <div class="card p-8">
+                <i class="fas fa-check-circle text-6xl text-green-500 mb-4"></i>
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Avaliação Enviada!</h2>
+                <p class="text-gray-600">Obrigado por sua contribuição.</p>
+                <div class="mt-6 bg-gray-100 p-4 rounded-lg inline-block">
+                    <p class="text-sm text-gray-500">Seu número de protocolo é:</p>
+                    <p id="thank-you-protocol" class="text-2xl font-mono font-bold text-[#005A9C]"></p>
+                </div>
+                <p class="text-gray-600 mt-4">Um e-mail de confirmação foi enviado para o endereço fornecido.</p>
+                <button type="button" id="newEvaluationBtn" class="btn-primary text-white font-bold py-2 px-6 rounded-md shadow-lg mt-8"><i class="fas fa-plus-circle mr-2"></i> Iniciar Nova Avaliação</button>
             </div>
-            
-            <!-- Hidden fields for submission -->
-            <input type="hidden" name="Protocolo" id="hidden-protocol-number">
-            <input type="hidden" name="Pontuacao_Final" id="hidden-total-score">
-            <input type="hidden" name="Pontuacao_1a" id="hidden-score-1a" value="0">
-            <input type="hidden" name="Pontuacao_1b" id="hidden-score-1b" value="0">
-            <input type="hidden" name="Pontuacao_1c" id="hidden-score-1c" value="0">
-            <input type="hidden" name="Pontuacao_1d" id="hidden-score-1d" value="0">
-            <input type="hidden" name="Pontuacao_1e" id="hidden-score-1e" value="0">
-            <input type="hidden" name="Created" value="x-sheetmonkey-current-date-time" />
-
-
-            <div class="flex justify-end gap-4 mt-6">
-                <button type="button" id="previewBtn" class="btn-secondary text-white font-bold py-2 px-4 rounded-md shadow-lg"><i class="fas fa-eye mr-2"></i> Visualizar Avaliação</button>
-                <button type="submit" id="submitBtn" class="btn-primary text-white font-bold py-2 px-4 rounded-md shadow-lg"><i class="fas fa-paper-plane mr-2"></i> Enviar Avaliação</button>
-            </div>
-
-        </form>
+        </div>
     </main>
 
     <footer class="bg-gray-800 text-white mt-12">
@@ -449,6 +478,11 @@
             
             emailjs.init(EMAILJS_PUBLIC_KEY);
 
+            const formContainer = document.getElementById('form-container');
+            const thankYouPage = document.getElementById('thank-you-page');
+            const newEvaluationBtn = document.getElementById('newEvaluationBtn');
+            const thankYouProtocol = document.getElementById('thank-you-protocol');
+
             const form = document.getElementById('evaluationForm');
             const tabela1TotalDisplay = document.getElementById('tabela1-total');
             const finalScoreDisplay = document.getElementById('final-score-display');
@@ -469,10 +503,19 @@
             function generateProtocolNumber() {
                 const date = new Date();
                 const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
-                return `ICETI-${year}${month}${day}-${randomPart}`;
+                const todayStr = `${year}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}`;
+
+                let counterData = JSON.parse(localStorage.getItem('protocolCounter'));
+
+                let nextCount = 1;
+                if (counterData && counterData.date === todayStr) {
+                    nextCount = counterData.count + 1;
+                }
+
+                localStorage.setItem('protocolCounter', JSON.stringify({ date: todayStr, count: nextCount }));
+
+                const formattedCount = String(nextCount).padStart(3, '0');
+                return `${todayStr}${formattedCount}`;
             }
 
             function showToast(message, isError = false) {
@@ -532,8 +575,20 @@
                         isValid = false;
                     }
                 });
+                
+                form.querySelectorAll('.sub-criterion[data-criterion]').forEach(criterion => {
+                    criterion.classList.remove('error');
+                    const criterionId = criterion.dataset.criterion;
+                    const simRadio = form.querySelector(`input[name="Aplica_${criterionId}"][value="sim"]`);
+                    const slider = document.getElementById(`slider-${criterionId}`);
+                    if (simRadio && simRadio.checked && parseFloat(slider.value) === 0) {
+                       criterion.classList.add('error');
+                       isValid = false;
+                    }
+                });
+
                 if (!isValid) {
-                    showToast('Por favor, preencha todos os campos obrigatórios.', true);
+                    showToast('Por favor, preencha todos os campos obrigatórios e pontue os critérios marcados como "Sim".', true);
                 }
                 return isValid;
             }
@@ -571,7 +626,6 @@
                 emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
                     .then(function(response) {
                        console.log('E-MAIL ENVIADO COM SUCESSO!', response.status, response.text);
-                       showToast(`E-mail de confirmação enviado para ${data.Email}`, false);
                     }, function(error) {
                        console.error('FALHA NO ENVIO DO E-MAIL:', JSON.stringify(error));
                        showToast('Falha ao enviar e-mail de confirmação. Verifique o console para detalhes.', true);
@@ -598,12 +652,13 @@
                 })
                 .then(response => {
                     if (response.ok) {
-                        showToast(`Avaliação enviada! Protocolo: ${protocolNumber}`, false);
+                        formContainer.classList.add('hidden');
+                        thankYouProtocol.textContent = protocolNumber;
+                        thankYouPage.classList.remove('hidden');
+                        window.scrollTo(0, 0);
+                        
                         sendConfirmationEmail(dataForEmail);
                         closeModal();
-                        form.reset(); 
-                        updateAllScores();
-                        protocolNumber = null; 
                     } else {
                         showToast('Ocorreu um erro ao enviar para a planilha.', true);
                     }
@@ -626,6 +681,11 @@
                     radio.addEventListener('change', (e) => {
                         if (e.target.value === 'sim') {
                             sliderWrapper.classList.add('visible');
+                            if(slider.value === '0') {
+                                slider.value = 1;
+                                sliderValue.textContent = '1 pts';
+                                hiddenScoreInput.value = 1;
+                            }
                         } else {
                             sliderWrapper.classList.remove('visible');
                             slider.value = 0;
@@ -658,6 +718,18 @@
                 }
             });
             
+            newEvaluationBtn.addEventListener('click', () => {
+                thankYouPage.classList.add('hidden');
+                formContainer.classList.remove('hidden');
+                form.reset();
+                // Manually reset sliders and their displays
+                form.querySelectorAll('.slider-wrapper').forEach(sw => sw.classList.remove('visible'));
+                form.querySelectorAll('.slider-input').forEach(s => s.value = 0);
+                form.querySelectorAll('[id^="slider-value-"]').forEach(sv => sv.textContent = '0 pts');
+                updateAllScores();
+                protocolNumber = null;
+            });
+
             previewBtn.addEventListener('click', openModal);
             closeModalBtn.addEventListener('click', closeModal);
             confirmSubmitBtn.addEventListener('click', handleFormSubmit);
