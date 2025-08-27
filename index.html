@@ -502,20 +502,14 @@
 
             function generateProtocolNumber() {
                 const date = new Date();
-                const year = date.getFullYear();
-                const todayStr = `${year}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}`;
+                const datePart = date.getFullYear().toString() +
+                                 String(date.getMonth() + 1).padStart(2, '0') +
+                                 String(date.getDate()).padStart(2, '0');
+                
+                // Use last 3 digits of the timestamp in milliseconds as a unique counter for the day
+                const counterPart = String(Date.now()).slice(-3).padStart(3, '0');
 
-                let counterData = JSON.parse(localStorage.getItem('protocolCounter'));
-
-                let nextCount = 1;
-                if (counterData && counterData.date === todayStr) {
-                    nextCount = counterData.count + 1;
-                }
-
-                localStorage.setItem('protocolCounter', JSON.stringify({ date: todayStr, count: nextCount }));
-
-                const formattedCount = String(nextCount).padStart(3, '0');
-                return `${todayStr}${formattedCount}`;
+                return `${datePart}${counterPart}`;
             }
 
             function showToast(message, isError = false) {
