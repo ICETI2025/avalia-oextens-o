@@ -592,11 +592,11 @@
 
                 emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
                     .then(function(response) {
-                       console.log('SUCCESS!', response.status, response.text);
+                       console.log('E-MAIL ENVIADO COM SUCESSO!', response.status, response.text);
                        showToast(`E-mail de confirmação enviado para ${data.Email}`, false);
                     }, function(error) {
-                       console.log('FAILED...', error);
-                       showToast('Falha ao enviar e-mail de confirmação.', true);
+                       console.error('FALHA NO ENVIO DO E-MAIL:', JSON.stringify(error));
+                       showToast('Falha ao enviar e-mail de confirmação. Verifique o console para detalhes.', true);
                     });
             }
 
