@@ -653,9 +653,6 @@
                 if (event.target.id === 'observacoes') {
                     updateCharCounter();
                 }
-                if(event.target.hasAttribute('required')) {
-                    // This function was removed, so we don't call it.
-                }
             });
 
              form.addEventListener('change', (event) => {
