@@ -13,7 +13,7 @@
         - Tooltips: Added info icons with CSS-based tooltips to provide contextual help.
         - Tabela 1 Criteria (e.g., 1a-1e): Radio buttons with a conditional, restyled range slider.
         - Final Score Summary: A dedicated, styled card for high visibility.
-        - Library/Method: Vanilla JavaScript for all logic. Replaced native alerts with custom toast notifications. Form submission now triggers an email confirmation. -->
+        - Library/Method: Vanilla JavaScript for all logic. Replaced native alerts with custom toast notifications. Form submission is now a standard POST action. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -206,7 +206,7 @@
     </header>
 
     <main class="container mx-auto px-6 py-8">
-        <form id="evaluationForm" action="https://api.sheetmonkey.io/form/c5NVMH1aTBaAihMSwceVVq" method="post">
+        <form id="evaluationForm" action="https://api.sheetmonkey.io/form/jJotmHpLKDGoULBwkVKsvo" method="post">
             
             <div class="card">
                 <div class="card-header bg-gray-50 p-4 border-b border-gray-200">
