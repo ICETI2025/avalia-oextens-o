@@ -217,7 +217,7 @@
                     </div>
                     <div class="p-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
+                            <div class="md:col-span-2">
                                 <label for="evaluatorName" class="block text-sm font-medium text-gray-700 mb-1">Avaliador(a):</label>
                                 <input type="text" id="evaluatorName" name="Avaliador" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
                             </div>
@@ -236,7 +236,6 @@
                 <div class="card">
                      <div class="p-4 flex justify-between items-center bg-gray-800 text-white rounded-t-lg">
                         <h2 class="text-xl font-semibold"><i class="fas fa-clipboard-list mr-2"></i> Pontuação do Projeto</h2>
-                        <div class="text-lg font-bold">Total: <span id="tabela1-total" class="text-yellow-300">0.0</span></div>
                     </div>
                     <div class="p-6">
                         <!-- Critério 1 -->
@@ -244,9 +243,9 @@
                             <p class="font-semibold mb-3 text-lg text-gray-700 flex items-center">1. Diretrizes da extensão (Máx: 25) <i class="fas fa-info-circle tooltip" data-tooltip="Avalie se o projeto atende às 5 diretrizes do FORPROEXT."></i></p>
                             <div class="space-y-6 pl-4">
                                 <div class="sub-criterion" data-criterion="1a">
-                                    <p>a) Interação dialógica</p>
-                                    <p class="text-sm text-gray-600 mt-2">Este critério se aplica ao projeto?</p>
-                                    <div class="flex space-x-4 mt-1">
+                                    <p class="font-medium">a) Interação dialógica</p>
+                                    <p class="text-sm text-gray-600 mt-1">O projeto apresenta metodologias que estimulam a participação e democratização do conhecimento, com a contribuição de atores não-universitários em sua produção e difusão?</p>
+                                    <div class="flex space-x-4 mt-2">
                                         <label class="flex items-center"><input type="radio" name="Aplica_1a" value="sim" class="mr-2"> Sim</label>
                                         <label class="flex items-center"><input type="radio" name="Aplica_1a" value="nao" checked class="mr-2"> Não</label>
                                     </div>
@@ -259,9 +258,9 @@
                                     </div>
                                 </div>
                                 <div class="sub-criterion" data-criterion="1b">
-                                    <p>b) Interdisciplinaridade</p>
-                                    <p class="text-sm text-gray-600 mt-2">Este critério se aplica ao projeto?</p>
-                                    <div class="flex space-x-4 mt-1">
+                                    <p class="font-medium">b) Interdisciplinaridade</p>
+                                    <p class="text-sm text-gray-600 mt-1">O projeto apresenta proposta de interação de modelos, conceitos e metodologias de diferentes áreas do conhecimento e/ou constrói alianças intersetoriais, interorganizacionais e interprofissionais?</p>
+                                    <div class="flex space-x-4 mt-2">
                                         <label class="flex items-center"><input type="radio" name="Aplica_1b" value="sim" class="mr-2"> Sim</label>
                                         <label class="flex items-center"><input type="radio" name="Aplica_1b" value="nao" checked class="mr-2"> Não</label>
                                     </div>
@@ -274,9 +273,9 @@
                                     </div>
                                 </div>
                                 <div class="sub-criterion" data-criterion="1c">
-                                    <p>c) Relação com ensino e pesquisa</p>
-                                    <p class="text-sm text-gray-600 mt-2">Este critério se aplica ao projeto?</p>
-                                    <div class="flex space-x-4 mt-1">
+                                    <p class="font-medium">c) Relação com ensino e pesquisa</p>
+                                    <p class="text-sm text-gray-600 mt-1">O projeto apresenta propostas de articulação com a produção de conhecimento (científico e cultural) e com o currículo do curso, e/ou estratégias para apreensão de saberes e práticas ainda não sistematizados?</p>
+                                    <div class="flex space-x-4 mt-2">
                                         <label class="flex items-center"><input type="radio" name="Aplica_1c" value="sim" class="mr-2"> Sim</label>
                                         <label class="flex items-center"><input type="radio" name="Aplica_1c" value="nao" checked class="mr-2"> Não</label>
                                     </div>
@@ -289,9 +288,9 @@
                                     </div>
                                 </div>
                                 <div class="sub-criterion" data-criterion="1d">
-                                    <p>d) Impacto na formação do estudante</p>
-                                    <p class="text-sm text-gray-600 mt-2">Este critério se aplica ao projeto?</p>
-                                    <div class="flex space-x-4 mt-1">
+                                    <p class="font-medium">d) Impacto na formação do estudante</p>
+                                    <p class="text-sm text-gray-600 mt-1">O projeto cria oportunidades de aprendizado para além do currículo e/ou oferece condições para os estudantes desenvolverem um protagonismo na sua formação técnica e cidadã?</p>
+                                    <div class="flex space-x-4 mt-2">
                                         <label class="flex items-center"><input type="radio" name="Aplica_1d" value="sim" class="mr-2"> Sim</label>
                                         <label class="flex items-center"><input type="radio" name="Aplica_1d" value="nao" checked class="mr-2"> Não</label>
                                     </div>
@@ -304,9 +303,9 @@
                                     </div>
                                 </div>
                                 <div class="sub-criterion" data-criterion="1e">
-                                    <p>e) Transformação social</p>
-                                    <p class="text-sm text-gray-600 mt-2">Este critério se aplica ao projeto?</p>
-                                    <div class="flex space-x-4 mt-1">
+                                    <p class="font-medium">e) Transformação social</p>
+                                    <p class="text-sm text-gray-600 mt-1">O projeto se propõe a uma atuação transformadora, voltada para os interesses e necessidades das comunidades envolvidas e propiciadora do desenvolvimento social e regional?</p>
+                                    <div class="flex space-x-4 mt-2">
                                         <label class="flex items-center"><input type="radio" name="Aplica_1e" value="sim" class="mr-2"> Sim</label>
                                         <label class="flex items-center"><input type="radio" name="Aplica_1e" value="nao" checked class="mr-2"> Não</label>
                                     </div>
@@ -450,7 +449,6 @@
             const thankYouProtocol = document.getElementById('thank-you-protocol');
 
             const form = document.getElementById('evaluationForm');
-            const tabela1TotalDisplay = document.getElementById('tabela1-total');
             const finalScoreDisplay = document.getElementById('final-score-display');
             const observacoesTextarea = document.getElementById('observacoes');
             const charCountSpan = document.getElementById('char-count');
@@ -474,9 +472,10 @@
                 
                 const timePart = String(date.getHours()).padStart(2, '0') +
                                  String(date.getMinutes()).padStart(2, '0') +
-                                 String(date.getSeconds()).padStart(2, '0');
+                                 String(date.getSeconds()).padStart(2, '0') +
+                                 String(date.getMilliseconds()).padStart(3, '0');
 
-                const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
+                const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
 
                 return `${datePart}-${timePart}-${randomPart}`;
             }
@@ -519,7 +518,9 @@
 
             function updateAllScores() {
                 const totalT1 = calculateTabela1Score();
-                tabela1TotalDisplay.textContent = totalT1.toFixed(1);
+                if(document.getElementById('tabela1-total')) {
+                    document.getElementById('tabela1-total').textContent = totalT1.toFixed(1);
+                }
                 finalScoreDisplay.textContent = totalT1.toFixed(1);
                 hiddenTotalScore.value = totalT1.toFixed(1);
                 return { totalT1 };
@@ -644,11 +645,6 @@
                     radio.addEventListener('change', (e) => {
                         if (e.target.value === 'sim') {
                             sliderWrapper.classList.add('visible');
-                            if(slider.value === '0') {
-                                slider.value = 1;
-                                sliderValue.textContent = '1 pts';
-                                hiddenScoreInput.value = 1;
-                            }
                         } else {
                             sliderWrapper.classList.remove('visible');
                             slider.value = 0;
