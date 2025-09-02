@@ -217,7 +217,7 @@
                     </div>
                     <div class="p-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="md:col-span-2">
+                             <div>
                                 <label for="evaluatorName" class="block text-sm font-medium text-gray-700 mb-1">Avaliador(a):</label>
                                 <input type="text" id="evaluatorName" name="Avaliador" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
                             </div>
@@ -228,6 +228,10 @@
                             <div class="md:col-span-2">
                                 <label for="projectTitle" class="block text-sm font-medium text-gray-700 mb-1">Título do Projeto Avaliado:</label>
                                 <input type="text" id="projectTitle" name="Titulo_Projeto" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label for="projectProtocol" class="block text-sm font-medium text-gray-700 mb-1">N° de protocolo do projeto:</label>
+                                <input type="text" id="projectProtocol" name="Protocolo_Projeto" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
                             </div>
                         </div>
                     </div>
@@ -321,10 +325,10 @@
                         </div>
                         <!-- Critério 2 -->
                         <div class="criterion-section">
-                            <p class="font-semibold mb-3 text-lg text-gray-700 flex items-center">2. Ações principais (Máx: 40) <i class="fas fa-info-circle tooltip" data-tooltip="Local de realização das atividades principais do projeto."></i></p>
+                            <p class="font-semibold mb-3 text-lg text-gray-700 flex items-center">2. Ações principais (Máx: 10) <i class="fas fa-info-circle tooltip" data-tooltip="Local de realização das atividades principais do projeto."></i></p>
                             <div class="space-y-2 pl-4">
-                                <label class="flex items-center"><input type="radio" name="Acoes_Principais" value="40" class="mr-2"> São realizadas na comunidade externa à Unicesumar/ICETI (40 pts)</label>
-                                <label class="flex items-center"><input type="radio" name="Acoes_Principais" value="10" class="mr-2"> São realizadas nos espaços da Unicesumar/ICETI com foco na comunidade externa (10 pts)</label>
+                                <label class="flex items-center"><input type="radio" name="Acoes_Principais" value="10" class="mr-2"> São realizadas na comunidade externa à Unicesumar/ICETI (10 pts)</label>
+                                <label class="flex items-center"><input type="radio" name="Acoes_Principais" value="5" class="mr-2"> São realizadas nos espaços da Unicesumar/ICETI com foco na comunidade externa (5 pts)</label>
                                 <label class="flex items-center"><input type="radio" name="Acoes_Principais" value="0" checked class="mr-2"> Nenhuma das opções</label>
                             </div>
                         </div>
@@ -369,7 +373,7 @@
                 </div>
                 
                 <!-- Hidden fields for submission -->
-                <input type="hidden" name="Protocolo" id="hidden-protocol-number">
+                <input type="hidden" name="Protocolo_Avaliacao" id="hidden-protocol-number">
                 <input type="hidden" name="Pontuacao_Final" id="hidden-total-score">
                 <input type="hidden" name="Pontuacao_1a" id="hidden-score-1a" value="0">
                 <input type="hidden" name="Pontuacao_1b" id="hidden-score-1b" value="0">
@@ -493,7 +497,7 @@
                 }, 4000);
             }
 
-            function calculateTabela1Score() {
+            function calculateTotalScore() {
                 let total = 0;
                 
                 let item1Total = 0;
@@ -509,21 +513,18 @@
 
                 form.querySelectorAll('input[name="Acoes_Principais"]:checked, input[name="Docentes_Participantes"]:checked').forEach(el => total += parseFloat(el.value));
                 
-                let item6Score = 0;
-                form.querySelectorAll('input[name="Acoes_Contempladas"]:checked').forEach(el => item6Score += 5);
-                total += Math.min(item6Score, 20);
+                let item4Score = 0;
+                form.querySelectorAll('input[name="Acoes_Contempladas"]:checked').forEach(el => item4Score += 5);
+                total += Math.min(item4Score, 20);
 
                 return total;
             }
 
             function updateAllScores() {
-                const totalT1 = calculateTabela1Score();
-                if(document.getElementById('tabela1-total')) {
-                    document.getElementById('tabela1-total').textContent = totalT1.toFixed(1);
-                }
-                finalScoreDisplay.textContent = totalT1.toFixed(1);
-                hiddenTotalScore.value = totalT1.toFixed(1);
-                return { totalT1 };
+                const totalScore = calculateTotalScore();
+                finalScoreDisplay.textContent = totalScore.toFixed(1);
+                hiddenTotalScore.value = totalScore.toFixed(1);
+                return { totalScore };
             }
 
             function updateCharCounter() {
@@ -566,9 +567,9 @@
                 hiddenProtocolNumber.value = protocolNumber;
                 modalProtocolNumber.textContent = protocolNumber;
 
-                const { totalT1 } = updateAllScores();
-                modalTotalT1.textContent = totalT1.toFixed(1);
-                modalGrandTotal.textContent = totalT1.toFixed(1);
+                const { totalScore } = updateAllScores();
+                modalTotalT1.textContent = totalScore.toFixed(1);
+                modalGrandTotal.textContent = totalScore.toFixed(1);
                 previewModal.classList.remove('invisible', 'opacity-0');
                 previewModal.querySelector('.modal-content').classList.remove('scale-95');
             }
@@ -581,10 +582,11 @@
             
             function sendConfirmationEmail(data) {
                 const templateParams = {
-                    protocolo: data.Protocolo,
+                    protocolo: data.Protocolo_Avaliacao,
                     nome_avaliador: data.Avaliador,
                     titulo_projeto: data.Titulo_Projeto,
                     email_destinatario: data.Email,
+                    protocolo_projeto: data.Protocolo_Projeto
                 };
 
                 emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
