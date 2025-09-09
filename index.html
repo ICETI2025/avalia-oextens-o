@@ -364,7 +364,7 @@
                     </div>
                 </div>
                 
-                <!-- Hidden fields for submission in correct order -->
+                <!-- Hidden fields for submission -->
                 <input type="hidden" name="Protocolo da Avaliação" id="hidden-protocol-number">
                 <input type="hidden" name="1a. Interação dialógica (Pontos)" id="hidden-score-1a" value="0">
                 <input type="hidden" name="1b. Interdisciplinaridade (Pontos)" id="hidden-score-1b" value="0">
@@ -495,7 +495,7 @@
                 let item1Total = 0;
                 form.querySelectorAll('.sub-criterion[data-criterion]').forEach(criterion => {
                     const criterionId = criterion.dataset.criterion;
-                    const simRadio = form.querySelector(`input[name="1${criterionId.slice(1)}. ${criterion.querySelector('p.font-medium').textContent.slice(3)} (Aplica?)"][value="sim"]`);
+                    const simRadio = form.querySelector(`input[name*="${criterionId}."][value="sim"]`);
                     if (simRadio && simRadio.checked) {
                         const slider = document.getElementById(`slider-${criterionId}`);
                         item1Total += parseFloat(slider.value);
@@ -510,7 +510,7 @@
                 const hiddenScore3 = document.getElementById('hidden-score-3');
                 form.querySelectorAll('input[name="3. Ações Contempladas"]:checked').forEach(el => item3Score += 5);
                 total += Math.min(item3Score, 25);
-                hiddenScore3.value = Math.min(item3Score, 25);
+                if (hiddenScore3) hiddenScore3.value = Math.min(item3Score, 25);
 
                 return total;
             }
@@ -518,7 +518,7 @@
             function updateAllScores() {
                 const totalScore = calculateTotalScore();
                 finalScoreDisplay.textContent = totalScore.toFixed(1);
-                hiddenTotalScore.value = totalScore.toFixed(1);
+                if (hiddenTotalScore) hiddenTotalScore.value = totalScore.toFixed(1);
                 return { totalScore };
             }
 
@@ -539,7 +539,7 @@
                 form.querySelectorAll('.sub-criterion[data-criterion]').forEach(criterion => {
                     criterion.classList.remove('error');
                     const criterionId = criterion.dataset.criterion;
-                    const simRadio = form.querySelector(`input[name="1${criterionId.slice(1)}. ${criterion.querySelector('p.font-medium').textContent.slice(3)} (Aplica?)"][value="sim"]`);
+                    const simRadio = form.querySelector(`input[name*="${criterionId}."][value="sim"]`);
                     const slider = document.getElementById(`slider-${criterionId}`);
                     if (simRadio && simRadio.checked && parseFloat(slider.value) === 0) {
                        criterion.classList.add('error');
@@ -632,11 +632,11 @@
 
             form.querySelectorAll('.sub-criterion[data-criterion]').forEach(criterion => {
                 const criterionId = criterion.dataset.criterion;
-                const radios = form.querySelectorAll(`input[name="1${criterionId.slice(1)}. ${criterion.querySelector('p.font-medium').textContent.slice(3)} (Aplica?)"]`);
+                const radios = form.querySelectorAll(`input[name*="${criterionId}."]`);
                 const sliderWrapper = document.getElementById(`slider-wrapper-${criterionId}`);
                 const slider = document.getElementById(`slider-${criterionId}`);
                 const sliderValue = document.getElementById(`slider-value-${criterionId}`);
-                const hiddenScoreInput = document.querySelector(`input[name="1${criterionId.slice(1)}. ${criterion.querySelector('p.font-medium').textContent.slice(3)} (Pontos)"]`);
+                const hiddenScoreInput = document.getElementById(`hidden-score-${criterionId}`);
                 
                 radios.forEach(radio => {
                     radio.addEventListener('change', (e) => {
